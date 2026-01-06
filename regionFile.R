@@ -17,7 +17,7 @@ end_year <- 2019
 
 lims <- c(xmin = 4200000, xmax = 6200000, ymin = 5000000, ymax = 7000000)# Specify limits of plotting window, also used to clip data grids
 
-zoom <- coord_sf(xlim = c(lims[["xmin"]], lims[["xmax"]]), ylim = c(lims[["ymin"]], lims[["ymax"]])) # Specify the plotting window for SF maps in this region
+# zoom <- coord_sf(xlim = c(lims[["xmin"]], lims[["xmax"]]), ylim = c(lims[["ymin"]], lims[["ymax"]])) # Specify the plotting window for SF maps in this region
 
 ggsave_map <- function(filename, plot) {
   ggsave(filename, plot, scale = 1, width = 12, height = 10, units = "cm", dpi = 500)

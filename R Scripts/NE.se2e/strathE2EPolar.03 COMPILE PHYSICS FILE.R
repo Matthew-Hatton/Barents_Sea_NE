@@ -8,7 +8,7 @@ library(MiMeMo.tools)
 
 source("./regionFile.R")
 
-Physics_template <- read.csv("C:/Users/psb22188/AppData/Local/R/win-library/4.5/StrathE2EPolar/extdata/Models/Barents_Sea/2011-2019/Driving/physics_BS_2011-2019.csv") # Read in example Physical drivers
+Physics_template <- read.csv("C:/Users/psb22188/AppData/Local/R/win-library/4.5/StrathE2EPolar/extdata/Models/Barents_Sea/2011-2019-CNRM-SSP370/Driving/physics_BS_2011-2019-CNRM-SSP370.csv") # Read in example Physical drivers
 
 #### Last minute data manipulation ####
 
@@ -23,15 +23,15 @@ My_scale <- readRDS("./Objects/domain/Domains.rds") %>%                         
   dplyr::select(Shore, slab_layer, Volume)
 
 My_light <- readRDS("./Objects/physics/light.rds") %>% 
-  filter(Forcing == forcing & SSP == paste0("ssp",ssp)) %>%               # Limit to reference period and variable
+  filter(Forcing == forcing & SSP == paste0("ssp",ssp) & between(Year,start_year,end_year)) %>%               # Limit to reference period and variable
   group_by(Month,SSP,Forcing) %>%                                                       # Average across months
   summarise(Measured = mean(Light, na.rm = T)) %>% 
   ungroup() %>% 
   arrange(Month)                                                            # Order to match template
 
 # Uses temperature at ice surface
-My_AirTemp <- readRDS("./Objects/physics/CNRM.ssp370.Ice.and.Air.Summary.rds") %>%
-  filter(between(Year, 2011, 2019)) %>%                 # Limit to reference period and variable
+My_AirTemp <- readRDS(paste0("./Objects/physics/",forcing,".ssp",ssp,".Ice.and.Air.Summary.rds")) %>%
+  filter(between(Year, start_year, end_year)) %>%                 # Limit to reference period and variable
   subset(select = c(Month,Shore,Air_Temperature)) %>% 
   group_by(Month, Shore) %>%                                                # Average across months
   summarise(Measured = mean(Air_Temperature, na.rm = T)) %>%

@@ -1,17 +1,20 @@
-## Change Model Setup file to be in line with the new West Greenland files. ##
+## Change Model Setup file to be in line with the new Barents Sea files. ##
 
 rm(list = ls()) # Reset
 library(tidyverse)
-source("./R Scripts/regionFileWG.R")
+source("./regionFile.R")
 
-model_setup <- read.csv("C:/Users/psb22188/AppData/Local/R/win-library/4.2/StrathE2EPolar/extdata/Models/West_Greenland/2011-2019/MODEL_SETUP.csv") # Load in template
+# read in current one
+model_setup <- read.csv(paste0("C:/Users/psb22188/AppData/Local/R/win-library/4.5/StrathE2EPolar/extdata/Models/Barents_Sea/",
+                               start_year,"-",end_year,"-",forcing,"-SSP",ssp,"/MODEL_SETUP.csv")) # Load in template
 
-## vector template of names to change
-vec <- model_setup$Filename
+# Physics
+model_setup$Filename[2] <- paste0("physics_BS_",start_year,"-",end_year,"-",forcing,"-SSP",ssp,".csv")
+model_setup$Comments[2] <- paste0("Barents Sea ",start_year,"-",end_year, " Physics data from NEMO-ERSEM.")
+# Chemistry
+model_setup$Filename[3] <- paste0("chemistry_BS_",start_year,"-",end_year,"-",forcing,"-SSP",ssp,".csv")
+model_setup$Comments[3] <- paste0("Barents Sea ",start_year,"-",end_year, " Chemistry data from NEMO-ERSEM.")
 
-vec_WG <- gsub("BS","WG",vec)
-
-model_setup$Filename <- vec_WG
-
-write.csv(model_setup, file = paste0("C:/Users/psb22188/AppData/Local/Programs/R/R-4.3.1/library/StrathE2EPolar/extdata/Models/West_Greenland.",Force,".",ssp,"./2011-2019/MODEL_SETUP.csv"),
+write.csv(model_setup, file = paste0("C:/Users/psb22188/AppData/Local/R/win-library/4.5/StrathE2EPolar/extdata/Models/Barents_Sea/",
+                                     start_year,"-",end_year,"-",forcing,"-SSP",ssp,"/MODEL_SETUP.csv"),
           row.names = F)

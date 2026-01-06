@@ -7,7 +7,7 @@ Packages <- c("MiMeMo.tools", "exactextractr", "raster", "lubridate")       # Li
 lapply(Packages, library, character.only = TRUE)   
 source("./regionFile.R")
 
-Boundary_template <- read.csv("C:/Users/psb22188/AppData/Local/R/win-library/4.5/StrathE2EPolar/extdata/Models/Barents_Sea/2011-2019/Driving/chemistry_BS_2011-2019.csv")  # Read in example boundary drivers
+Boundary_template <- read.csv("C:/Users/psb22188/AppData/Local/R/win-library/4.5/StrathE2EPolar/extdata/Models/East_Greenland/2011-2019/Driving/chemistry_GS_2011-2019.csv")  # Read in example boundary drivers
 
 ## Iterate over different time periods ##
 #### Last minute data manipulation ####

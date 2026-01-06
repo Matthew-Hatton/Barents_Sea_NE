@@ -45,30 +45,54 @@ res_all_NM_dfish <- readRDS("./Objects/Optimisation/DFISH_BS_NM_yield.rds")
 res_all_NM_pfish <- readRDS("./Objects/Optimisation/PFISH_BS_NM_yield.rds")
 
 # Just yield curves
+# res_pfish <- future_map(
+#   .x = seq(0, 3, 0.1),
+#   .f = ~ parallel_y_curve(Guild = "PLANKTIV", mult = .x, nyears = 50,ddmort_mult = 20,HRscale = 1.4)
+# )
+
+## -- move HR scale into fishing fleet file -- ##
 res_pfish <- future_map(
   .x = seq(0, 3, 0.1),
   .f = ~ parallel_y_curve(Guild = "PLANKTIV", mult = .x, nyears = 50,ddmort_mult = 20,HRscale = 1.4)
 )
-res_dfish <- future_map(
-  .x = seq(0, 3, 0.1),
-  .f = ~ parallel_y_curve(Guild = "DEMERSAL", mult = .x, nyears = 50,ddmort_mult = 1,HRscale = 1)
-)
+
+# res_dfish <- future_map(
+#   .x = seq(0, 3, 0.1),
+#   .f = ~ parallel_y_curve(Guild = "DEMERSAL", mult = .x, nyears = 50,ddmort_mult = 1,HRscale = 1)
+# )
 
 pfish <- bind_rows(res_pfish) %>% 
   rbind(res_all_NM_pfish)
-dfish <- bind_rows(res_dfish) %>% 
-  rbind(res_all_NM_dfish)
+# dfish <- bind_rows(res_dfish) %>% 
+#   rbind(res_all_NM_dfish)
 p1 <- ggplot() +
   geom_line(data = pfish %>% filter(Description == "Plank.fish_landings_live_weight"),
-            aes(x = Multiplier,y = Model_annual_flux,linetype = Model)) +
-  labs(title = "Planktivorous fish",y = "Catch",caption = "Planktivorous fish DDMort: 20x, HR Scale: 1.4x, Max Uptake Rate: 1.5x")
+            aes(x = Multiplier, y = Model_annual_flux, linetype = Model)) +
+  geom_hline(yintercept = 0.0778, linetype = "solid") +
+  geom_vline(xintercept = 0.33) +
+  geom_hline(yintercept = 0.168563, linetype = "dashed") +
+  # geom_vline(xintercept = 1,linetype = "dashed") +
+  scale_x_continuous(
+    breaks = c(seq(0, 3, 1), 0.33, 1)
+  ) +
+  labs(
+    title = "Planktivorous fish",
+    y = "Catch",
+    caption = "Planktivorous fish DDMort: 1x, HR Scale: 1.4x, Max Uptake Rate: 1x"
+  ) +
+  NULL
+
+p1
+
+ggsave(plot = p1,"./Figures/optimisation/Fixing/After fitting fishing/PFish tst original.png")
+
 p2 <- ggplot() +
   geom_line(data = dfish %>% filter(Description == "Dem.fish_landings_live_weight"),
             aes(x = Multiplier,y = Model_annual_flux,linetype = Model)) +
   labs(title = "Demersal fish",y = "Catch")
 
 p1 + p2 + plot_layout(guides = "collect")
-ggsave(paste0("./Figures/optimisation/Fixing/After fitting fishing/YieldCurves.png"))
+ggsave(paste0("./Figures/optimisation/Fixing/After fitting fishing/tst.png"))
 
 ## -- DDMort multipliers -- ##
 for (i in mort_mults) {
